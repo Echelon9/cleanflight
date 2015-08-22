@@ -722,6 +722,12 @@ help: Makefile
 test:
 	cd src/test && $(MAKE) test || true
 
+## qemu        : run cleanflight in software emulation
+qemu: $(TARGET_ELF)
+	qemu-system-arm -machine none -cpu cortex-m3 -m 513 \
+	-kernel $(TARGET_ELF) -S -gdb tcp::51234& \
+	arm-none-eabi-gdb -q $(TARGET_ELF) -ex 'target remote localhost:51234'
+
 # rebuild everything when makefile changes
 $(TARGET_OBJS) : Makefile
 
